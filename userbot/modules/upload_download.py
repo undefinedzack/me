@@ -240,9 +240,6 @@ async def uploadir(udir_event):
 @errors_handler
 async def upload(u_event):
     """ For .upload command, allows you to upload a file from the userbot's server """
-    if u_event.is_channel and not u_event.is_group:
-        await u_event.edit("`Uploading isn't permitted on channels`")
-        return
     await u_event.edit("Processing ...")
     input_str = u_event.pattern_match.group(1)
     if input_str in ("userbot.session", "config.env"):

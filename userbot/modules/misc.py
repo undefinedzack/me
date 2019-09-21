@@ -155,8 +155,10 @@ async def raw(event):
         reply_to_id = event.message.id
     with io.BytesIO(str.encode(the_real_message)) as out_file:
         out_file.name = "raw_message_data.txt"
+        await event.edit(
+            "`Check the userbot log for the decoded message data !!`")
         await event.client.send_file(
-            event.chat_id,
+            BOTLOG_CHATID,
             out_file,
             force_document=True,
             allow_cache=False,
@@ -220,7 +222,7 @@ CMD_HELP.update({"restart": ".restart\
 \nUsage: Restarts the bot !!"})
 
 CMD_HELP.update({
-    "json":
-    ".json\
+    "raw":
+    ".raw\
 \nUsage: Get detailed JSON-like formatted data about replied message."
 })
