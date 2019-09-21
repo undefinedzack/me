@@ -8,7 +8,6 @@
 """ Userbot module for getiing info about any user on Telegram(including you!). """
 
 import os
-
 from telethon.tl.functions.photos import GetUserPhotosRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
@@ -28,7 +27,8 @@ async def who(event):
     if not os.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
         os.makedirs(TEMP_DOWNLOAD_DIRECTORY)
 
-    replied_user = await get_user_from_event(event)[0]
+    replied_user = await get_user_from_event(event)
+    replied_user = replied_user[0]
     photo, caption = await fetch_info(replied_user, event)
     message_id_to_reply = event.message.reply_to_msg_id
     if not message_id_to_reply:
