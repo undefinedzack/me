@@ -9,7 +9,6 @@ import asyncio
 from getpass import getuser
 from os import remove
 from sys import executable
-
 from userbot import CMD_HELP, BOTLOG, BOTLOG_CHATID
 from userbot.events import register
 
