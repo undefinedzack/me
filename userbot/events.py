@@ -45,70 +45,70 @@ def register(**args):
         if not ignore_unsafe:
             args['pattern'] = pattern.replace('^.', unsafe_pattern, 1)
 
+    def decorator(func):
+        async def wrapper(errors):
+            try:
+                await func(errors)
+            except KeyboardInterrupt:
+                pass
+            except StopPropagation:  # AFK: manually raised error.
+                return
+            except BaseException:
+                date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
-def decorator(func):
-    async def wrapper(errors):
-        try:
-            await func(errors)
-        except KeyboardInterrupt:
-            pass
-        except StopPropagation:  # AFK: manually raised error.
-            return
-        except BaseException:
-            date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+                text = "**USERBOT CRASH REPORT**\n"
+                link = "[PaperplaneExtended Support Chat](https://t.me/PaperplaneExtendedSupport)"
+                text += "If you wanna you can report it"
+                text += f"- just forward this message to {link}.\n"
+                text += "Nothing is logged except the fact of error and date\n"
 
-            text = "**USERBOT CRASH REPORT**\n"
-            link = "[PaperplaneExtended Support Chat](https://t.me/PaperplaneExtendedSupport)"
-            text += "If you wanna you can report it"
-            text += f"- just forward this message to {link}.\n"
-            text += "Nothing is logged except the fact of error and date\n"
+                ftext = "========== DISCLAIMER =========="
+                ftext += "\nThis file uploaded ONLY here,"
+                ftext += "\nwe logged only fact of error and date,"
+                ftext += "\nwe respect your privacy,"
+                ftext += "\nyou may not report this error if you've"
+                ftext += "\nany confidential data here, no one will see your data\n"
+                ftext += "================================\n\n"
+                ftext += "--------BEGIN USERBOT TRACEBACK LOG--------"
+                ftext += "\nDate: " + date
+                ftext += "\nGroup ID: " + str(errors.chat_id)
+                ftext += "\nSender ID: " + str(errors.sender_id)
+                ftext += "\n\nEvent Trigger:\n"
+                ftext += str(errors.text)
+                ftext += "\n\nTraceback info:\n"
+                ftext += str(format_exc())
+                ftext += "\n\nError text:\n"
+                ftext += str(sys.exc_info()[1])
+                ftext += "\n\n--------END USERBOT TRACEBACK LOG--------"
 
-            ftext = "========== DISCLAIMER =========="
-            ftext += "\nThis file uploaded ONLY here,"
-            ftext += "\nwe logged only fact of error and date,"
-            ftext += "\nwe respect your privacy,"
-            ftext += "\nyou may not report this error if you've"
-            ftext += "\nany confidential data here, no one will see your data\n"
-            ftext += "================================\n\n"
-            ftext += "--------BEGIN USERBOT TRACEBACK LOG--------"
-            ftext += "\nDate: " + date
-            ftext += "\nGroup ID: " + str(errors.chat_id)
-            ftext += "\nSender ID: " + str(errors.sender_id)
-            ftext += "\n\nEvent Trigger:\n"
-            ftext += str(errors.text)
-            ftext += "\n\nTraceback info:\n"
-            ftext += str(format_exc())
-            ftext += "\n\nError text:\n"
-            ftext += str(sys.exc_info()[1])
-            ftext += "\n\n--------END USERBOT TRACEBACK LOG--------"
+                command = "git log --pretty=format:\"%an: %s\" -5"
 
-            command = "git log --pretty=format:\"%an: %s\" -5"
+                ftext += "\n\n\nLast 5 commits:\n"
 
-            ftext += "\n\n\nLast 5 commits:\n"
+                process = await asyncsubshell(command,
+                                              stdout=asyncsub.PIPE,
+                                              stderr=asyncsub.PIPE)
+                stdout, stderr = await process.communicate()
+                result = str(stdout.decode().strip()) \
+                + str(stderr.decode().strip())
 
-            process = await asyncsubshell(command,
-                                          stdout=asyncsub.PIPE,
-                                          stderr=asyncsub.PIPE)
-            stdout, stderr = await process.communicate()
-            result = str(stdout.decode().strip()) \
-            + str(stderr.decode().strip())
+                ftext += result
 
-            ftext += result
+                file = open("error.log", "w+")
+                file.write(ftext)
+                file.close()
 
-            file = open("error.log", "w+")
-            file.write(ftext)
-            file.close()
+                await errors.client.send_file(
+                    BOTLOG_CHATID,
+                    "error.log",
+                    caption=text,
+                )
+                remove("error.log")
 
-            await errors.client.send_file(
-                BOTLOG_CHATID,
-                "error.log",
-                caption=text,
-            )
-            remove("error.log")
+                if not disable_edited:
+                    bot.add_event_handler(wrapper,
+                                          events.MessageEdited(**args))
+                bot.add_event_handler(wrapper, events.NewMessage(**args))
+                return wrapper
 
-            if not disable_edited:
-                bot.add_event_handler(wrapper, events.MessageEdited(**args))
-            bot.add_event_handler(wrapper, events.NewMessage(**args))
-            return wrapper
-
-    return decorator
+        return decorator
