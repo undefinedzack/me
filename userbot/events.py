@@ -10,6 +10,8 @@ from telethon import events
 
 from asyncio import subprocess as asyncsub
 from asyncio import create_subprocess_shell as asyncsubshell
+
+import sys
 from os import remove
 
 from userbot import bot, BOTLOG_CHATID
@@ -111,4 +113,4 @@ def register(**args):
                 bot.add_event_handler(wrapper, events.NewMessage(**args))
                 return wrapper
 
-        return decorator
+    return decorator
