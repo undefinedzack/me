@@ -45,6 +45,9 @@ def register(**args):
     if "group_only" in args:
         del args['group_only']
 
+    if "disable_errors" in args:
+        del args['disable_errors']
+
     if pattern:
         if not ignore_unsafe:
             args['pattern'] = pattern.replace('^.', unsafe_pattern, 1)
