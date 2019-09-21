@@ -19,8 +19,6 @@ from userbot import bot, BOTLOG_CHATID
 from traceback import format_exc
 from time import gmtime, strftime
 
-from telethon.events import StopPropagation
-
 
 def register(**args):
     """ Register a new event. """
@@ -53,8 +51,6 @@ def register(**args):
                 await func(errors)
             except KeyboardInterrupt:
                 pass
-            except StopPropagation:  # AFK: manually raised error.
-                return
             except BaseException:
                 date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
@@ -107,10 +103,9 @@ def register(**args):
                 )
                 remove("error.log")
 
-                if not disable_edited:
-                    bot.add_event_handler(wrapper,
-                                          events.MessageEdited(**args))
-                bot.add_event_handler(wrapper, events.NewMessage(**args))
-                return wrapper
+        if not disable_edited:
+            bot.add_event_handler(wrapper, events.MessageEdited(**args))
+        bot.add_event_handler(wrapper, events.NewMessage(**args))
+        return wrapper
 
     return decorator
