@@ -53,7 +53,7 @@ def register(**args):
             except KeyboardInterrupt:
                 pass
             except StopPropagation:
-                return
+                pass
             except BaseException:
                 date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
 
