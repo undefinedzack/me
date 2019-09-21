@@ -674,7 +674,7 @@ async def coin(event):
 async def who(event):
     """ slaps a user, or get slapped if not a reply. """
 
-    replied_user = await get_user_from_event(event)
+    replied_user = await get_user_from_event(event)[0]
     caption = await slap(replied_user, event)
     message_id_to_reply = event.message.reply_to_msg_id
 
