@@ -9,10 +9,10 @@ import traceback
 import sys
 import io
 from userbot.events import register
-from userbot import CMD_HELP, bot
+from userbot import CMD_HELP
 
 
-@bot.on(outgoing=True, pattern="^.try (.*)")
+@register(outgoing=True, pattern="^.try (.*)")
 async def test(event):
     await event.edit("Processing ...")
     cmd = event.pattern_match.group(1)
@@ -52,12 +52,12 @@ async def test(event):
     if len(final_output) > 4096:
         with io.BytesIO(str.encode(final_output)) as out_file:
             out_file.name = "try.txt"
-            await bot.send_file(event.chat_id,
-                                out_file,
-                                force_document=True,
-                                allow_cache=False,
-                                caption=cmd,
-                                reply_to=reply_to_id)
+            await event.client.send_file(event.chat_id,
+                                         out_file,
+                                         force_document=True,
+                                         allow_cache=False,
+                                         caption=cmd,
+                                         reply_to=reply_to_id)
             await event.delete()
     else:
         await event.edit(final_output)
