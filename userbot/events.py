@@ -7,6 +7,7 @@
  One of the main components of the userbot. """
 
 from telethon import events
+from telethon.events import StopPropagation
 
 from asyncio import subprocess as asyncsub
 from asyncio import create_subprocess_shell as asyncsubshell
@@ -50,6 +51,8 @@ def register(**args):
             try:
                 await func(errors)
             except KeyboardInterrupt:
+                pass
+            except StopPropagation:
                 pass
             except BaseException:
                 date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
