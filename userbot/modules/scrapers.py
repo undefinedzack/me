@@ -39,7 +39,7 @@ from youtube_dl.utils import (DownloadError, ContentTooShortError,
 from asyncio import sleep
 
 from userbot import CMD_HELP, BOTLOG, BOTLOG_CHATID, YOUTUBE_API_KEY, CHROME_DRIVER, GOOGLE_CHROME_BIN
-from userbot.events import register, errors_handler
+from userbot.events import register
 from telethon.tl.types import DocumentAttributeAudio
 from userbot.modules.upload_download import progress, humanbytes, time_formatter
 
@@ -49,7 +49,6 @@ TRT_LANG = "en"
 
 
 @register(outgoing=True, pattern="^.crblang (.*)")
-@errors_handler
 async def setlang(prog):
     global CARBONLANG
     CARBONLANG = prog.pattern_match.group(1)
@@ -57,7 +56,6 @@ async def setlang(prog):
 
 
 @register(outgoing=True, pattern="^.carbon")
-@errors_handler
 async def carbon_api(e):
     """ A Wrapper for carbon.now.sh """
     await e.edit("`Processing..`")
@@ -121,7 +119,6 @@ async def carbon_api(e):
 
 
 @register(outgoing=True, pattern="^.img (.*)")
-@errors_handler
 async def img_sampler(event):
     """ For .img command, search and return images matching the query. """
     await event.edit("Processing...")
@@ -153,7 +150,6 @@ async def img_sampler(event):
 
 
 @register(outgoing=True, pattern="^.currency (.*)")
-@errors_handler
 async def moni(event):
     input_str = event.pattern_match.group(1)
     input_sgra = input_str.split(" ")
@@ -182,7 +178,6 @@ async def moni(event):
 
 
 @register(outgoing=True, pattern=r"^.google (.*)")
-@errors_handler
 async def gsearch(q_event):
     """ For .google command, do a Google search. """
     match = q_event.pattern_match.group(1)
@@ -217,7 +212,6 @@ async def gsearch(q_event):
 
 
 @register(outgoing=True, pattern=r"^.wiki (.*)")
-@errors_handler
 async def wiki(wiki_q):
     """ For .wiki command, fetch content from Wikipedia. """
     match = wiki_q.pattern_match.group(1)
@@ -250,7 +244,6 @@ async def wiki(wiki_q):
 
 
 @register(outgoing=True, pattern="^.ud (.*)")
-@errors_handler
 async def urban_dict(ud_e):
     """ For .ud command, fetch content from Urban Dictionary. """
     await ud_e.edit("Processing...")
@@ -291,7 +284,6 @@ async def urban_dict(ud_e):
 
 
 @register(outgoing=True, pattern=r"^.tts(?: |$)([\s\S]*)")
-@errors_handler
 async def text_to_speech(query):
     """ For .tts command, a wrapper for Google Text-to-Speech. """
     textx = await query.get_reply_message()
@@ -338,7 +330,6 @@ async def text_to_speech(query):
 
 # kanged from Blank-x ;---;
 @register(outgoing=True, pattern="^.imdb (.*)")
-@errors_handler
 async def imdb(e):
     try:
         movie_name = e.pattern_match.group(1)
@@ -422,7 +413,6 @@ async def imdb(e):
 
 
 @register(outgoing=True, pattern=r"^.trt(?: |$)([\s\S]*)")
-@errors_handler
 async def translateme(trans):
     """ For .trt command, translate the given text using Google Translate. """
     translator = Translator()
@@ -455,7 +445,6 @@ async def translateme(trans):
 
 
 @register(pattern=".lang (trt|tts) (.*)", outgoing=True)
-@errors_handler
 async def lang(value):
     """ For .lang command, change the default langauge of userbot scrapers. """
     util = value.pattern_match.group(1).lower()
@@ -491,7 +480,6 @@ async def lang(value):
 
 
 @register(outgoing=True, pattern="^.yt (.*)")
-@errors_handler
 async def yt_search(video_q):
     """ For .yt command, do a YouTube search from Telegram. """
     query = video_q.pattern_match.group(1)
@@ -555,7 +543,6 @@ async def youtube_search(query,
 
 
 @register(outgoing=True, pattern=r".rip?(audio|video) (.*)")
-@errors_handler
 async def download_video(v_url):
     """ For .rip command, download media from YouTube + 800 other sites. """
     url = v_url.pattern_match.group(2)
@@ -703,17 +690,12 @@ CMD_HELP.update({
     '.carbon <text> [or reply]\
         \nUsage: Beautify your code using carbon.now.sh\nUse .crblang <text> to set language for your code.'
 })
-CMD_HELP.update({
-    'search':
-    '.search <query>\
-        \nUsage: Does a search on StartPage.'
-})
+CMD_HELP.update(
+    {'google': '.google <query>\
+        \nUsage: Does a search on Google.'})
 CMD_HELP.update(
     {'wiki': '.wiki <query>\
         \nUsage: Does a search on Wikipedia.'})
-CMD_HELP.update(
-    {'ud': '.ud <query>\
-        \nUsage: Does a search on Urban Dictionary.'})
 CMD_HELP.update(
     {'ud': '.ud <query>\
         \nUsage: Does a search on Urban Dictionary.'})
@@ -730,7 +712,7 @@ CMD_HELP.update({
 CMD_HELP.update({'yt': '.yt <text>\
         \nUsage: Does a YouTube search.'})
 CMD_HELP.update(
-    {"imdb": ".imdb <movie-name>\nShows movie info and other stuffs"})
+    {"imdb": ".imdb <movie-name>\nShows movie info and other stuff."})
 CMD_HELP.update({
     'rip':
     '.ripaudio <url> or ripvideo <url>\

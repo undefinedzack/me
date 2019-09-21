@@ -22,7 +22,7 @@ from hachoir.parser import createParser
 from telethon.tl.types import DocumentAttributeVideo
 
 from userbot import LOGS, CMD_HELP, TEMP_DOWNLOAD_DIRECTORY
-from userbot.events import register, errors_handler
+from userbot.events import register
 
 
 async def progress(current, total, event, start, type_of_ps, file_name=None):
@@ -85,7 +85,6 @@ def time_formatter(milliseconds: int) -> str:
 
 
 @register(pattern=r".download(?: |$)(.*)", outgoing=True)
-@errors_handler
 async def download(target_file):
     """ For .download command, download files to the userbot's server. """
     await target_file.edit("Processing ...")
@@ -160,7 +159,6 @@ async def download(target_file):
 
 
 @register(pattern=r".uploadir (.*)", outgoing=True)
-@errors_handler
 async def uploadir(udir_event):
     """ For .uploadir command, allows you to upload everything from a folder in the server"""
     input_str = udir_event.pattern_match.group(1)
@@ -237,7 +235,6 @@ async def uploadir(udir_event):
 
 
 @register(pattern=r".upload (.*)", outgoing=True)
-@errors_handler
 async def upload(u_event):
     """ For .upload command, allows you to upload a file from the userbot's server """
     await u_event.edit("Processing ...")
@@ -314,7 +311,6 @@ def extract_w_h(file):
 
 
 @register(pattern=r".uploadas(stream|vn|all) (.*)", outgoing=True)
-@errors_handler
 async def uploadas(uas_event):
     """ For .uploadas command, allows you to specify some arguments for upload. """
     await uas_event.edit("Processing ...")

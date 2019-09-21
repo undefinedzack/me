@@ -1,10 +1,9 @@
-from userbot.events import register, errors_handler
+from userbot.events import register
 from userbot import CMD_HELP, bot, LOGS, CLEAN_WELCOME, BOTLOG_CHATID
 from telethon.events import ChatAction
 
 
 @bot.on(ChatAction)
-@errors_handler
 async def welcome_to_chat(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import get_current_welcome_settings
@@ -75,7 +74,6 @@ async def welcome_to_chat(event):
 
 
 @register(outgoing=True, pattern=r"^.setwelcome$")
-@errors_handler
 async def save_welcome(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import add_welcome_setting
@@ -98,7 +96,6 @@ async def save_welcome(event):
 
 
 @register(outgoing=True, pattern="^.checkwelcome$")
-@errors_handler
 async def show_welcome(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import get_current_welcome_settings
@@ -115,7 +112,6 @@ async def show_welcome(event):
 
 
 @register(outgoing=True, pattern="^.rmwelcome$")
-@errors_handler
 async def del_welcome(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import rm_welcome_setting

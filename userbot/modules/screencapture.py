@@ -11,12 +11,11 @@ import traceback
 from selenium import webdriver
 from asyncio import sleep
 from selenium.webdriver.chrome.options import Options
-from userbot.events import register, errors_handler
+from userbot.events import register
 from userbot import GOOGLE_CHROME_BIN, CHROME_DRIVER, CMD_HELP
 
 
 @register(pattern=r".sc (.*)", outgoing=True)
-@errors_handler
 async def capture(url):
     """ For .sc command, capture a website and send the photo. """
     await url.edit("Processing ...")

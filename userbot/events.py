@@ -10,6 +10,7 @@ from telethon import events
 
 from asyncio import subprocess as asyncsub
 from asyncio import create_subprocess_shell as asyncsubshell
+from os import remove
 
 from userbot import bot, BOTLOG_CHATID
 
@@ -44,27 +45,16 @@ def register(**args):
         if not ignore_unsafe:
             args['pattern'] = pattern.replace('^.', unsafe_pattern, 1)
 
-    def decorator(func):
-        if not disable_edited:
-            bot.add_event_handler(func, events.MessageEdited(**args))
-        bot.add_event_handler(func, events.NewMessage(**args))
 
-        return func
-
-    return decorator
-
-
-def errors_handler(func):
+def decorator(func):
     async def wrapper(errors):
         try:
             await func(errors)
         except StopPropagation:  # AFK: manually raised error.
             return
         except BaseException:
-            await errors.edit("OOF, my userbot has crashed.\
-            \nNeed to check my userbot logs for errors.")
-
             date = strftime("%Y-%m-%d %H:%M:%S", gmtime())
+
             text = "**USERBOT CRASH REPORT**\n"
             link = "[PaperplaneExtended Support Chat](https://t.me/PaperplaneExtendedSupport)"
             text += "If you wanna you can report it"
@@ -112,6 +102,12 @@ def errors_handler(func):
                 "error.log",
                 caption=text,
             )
-            return
+            remove("error.log")
 
-    return wrapper
+            if not disable_edited:
+                bot.add_event_handler(func, events.MessageEdited(**args))
+            bot.add_event_handler(func, events.NewMessage(**args))
+
+            return wrapper
+
+    return decorator

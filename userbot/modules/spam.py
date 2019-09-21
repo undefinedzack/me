@@ -8,11 +8,10 @@ import asyncio
 from asyncio import wait, sleep
 
 from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP
-from userbot.events import register, errors_handler
+from userbot.events import register
 
 
 @register(outgoing=True, pattern="^.tspam (.*)")
-@errors_handler
 async def tmeme(e):
     tspam = str(e.pattern_match.group(1))
     message = tspam.replace(" ", "")
@@ -26,7 +25,6 @@ async def tmeme(e):
 
 
 @register(outgoing=True, pattern="^.spam (.*)")
-@errors_handler
 async def spammer(e):
     counter = int(e.pattern_match.group(1).split(' ', 1)[0])
     spam_message = str(e.pattern_match.group(1).split(' ', 1)[1])
@@ -38,7 +36,6 @@ async def spammer(e):
 
 
 @register(outgoing=True, pattern="^.picspam")
-@errors_handler
 async def tiny_pic_spam(e):
     message = e.text
     text = message.split()
@@ -54,7 +51,6 @@ async def tiny_pic_spam(e):
 
 
 @register(outgoing=True, pattern="^.delayspam (.*)")
-@errors_handler
 async def spammer(e):
     spamDelay = float(e.pattern_match.group(1).split(' ', 2)[0])
     counter = int(e.pattern_match.group(1).split(' ', 2)[1])

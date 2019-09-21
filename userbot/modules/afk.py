@@ -12,7 +12,7 @@ from telethon.events import StopPropagation
 
 from userbot import (AFKREASON, COUNT_MSG, CMD_HELP, ISAFK, BOTLOG,
                      BOTLOG_CHATID, USERS, PM_AUTO_BAN)
-from userbot.events import register, errors_handler
+from userbot.events import register
 
 # ========================= CONSTANTS ============================
 AFKSTR = [
@@ -127,7 +127,6 @@ async def set_afk(afk_e):
 
 
 @register(outgoing=True)
-@errors_handler
 async def type_afk_is_not_true(notafk):
     """ This sets your status as not afk automatically when you write something while being afk """
     global ISAFK

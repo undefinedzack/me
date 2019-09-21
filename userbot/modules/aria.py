@@ -5,7 +5,7 @@ import aria2p
 from asyncio import sleep
 from os import system
 from userbot import LOGS, CMD_HELP
-from userbot.events import register, errors_handler
+from userbot.events import register
 
 cmd = "aria2c \
 --enable-rpc \
@@ -27,7 +27,6 @@ aria2 = aria2p.API(aria2p.Client(host="http://localhost", port=6800,
 
 
 @register(outgoing=True, pattern="^.aria magnet(?: |$)(.*)")
-@errors_handler
 async def magnet_download(event):
     magnet_uri = event.pattern_match.group(1)
     # Add Magnet URI Into Queue
@@ -45,7 +44,6 @@ async def magnet_download(event):
 
 
 @register(outgoing=True, pattern="^.aria tor(?: |$)(.*)")
-@errors_handler
 async def torrent_download(event):
     torrent_file_path = event.pattern_match.group(1)
     # Add Torrent Into Queue
