@@ -110,16 +110,19 @@ async def afk_on_pm(sender):
                     COUNT_MSG = COUNT_MSG + 1
 
 
-@register(outgoing=True, pattern="^.afk (?: |$)(.*)")
+@register(outgoing=True, pattern="^.afk(?: |$)(.*)")
 async def set_afk(afk_e):
     """ For .afk command, allows you to inform people that you are afk when they message you """
     message = afk_e.text
     string = afk_e.pattern_match.group(1)
     global ISAFK
     global AFKREASON
-    await afk_e.edit("Going AFK !!")
-    if string != "":
+    if string:
         AFKREASON = string
+        await afk_e.edit(f"Going AFK !!\
+        \nReason: `{string}`")
+    else:
+        await afk_e.edit("Going AFK !!")
     if BOTLOG:
         await afk_e.client.send_message(BOTLOG_CHATID, "You went AFK!")
     ISAFK = True
@@ -137,6 +140,7 @@ async def type_afk_is_not_true(notafk):
         ISAFK = False
         await notafk.respond("I'm no longer AFK.")
         await sleep(2)
+        await notafk.delete()
         if BOTLOG:
             await notafk.client.send_message(
                 BOTLOG_CHATID,
