@@ -50,6 +50,8 @@ def decorator(func):
     async def wrapper(errors):
         try:
             await func(errors)
+        except KeyboardInterrupt:
+            pass
         except StopPropagation:  # AFK: manually raised error.
             return
         except BaseException:
@@ -105,9 +107,8 @@ def decorator(func):
             remove("error.log")
 
             if not disable_edited:
-                bot.add_event_handler(func, events.MessageEdited(**args))
-            bot.add_event_handler(func, events.NewMessage(**args))
-
+                bot.add_event_handler(wrapper, events.MessageEdited(**args))
+            bot.add_event_handler(wrapper, events.NewMessage(**args))
             return wrapper
 
     return decorator
