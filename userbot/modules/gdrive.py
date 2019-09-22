@@ -178,7 +178,7 @@ async def upload_dir_to_gdrive(event):
         # first, create a sub-directory
         dir_id = await create_directory(
             http, os.path.basename(os.path.abspath(input_str)), parent_id)
-        await DoTeskWithDir(http, input_str, mone, dir_id)
+        await DoTeskWithDir(http, input_str, event, dir_id)
         dir_link = "https://drive.google.com/folderview?id={}".format(dir_id)
         await event.edit(f"Here is your Google Drive [link]({dir_link})")
     else:
@@ -190,7 +190,7 @@ async def upload_dir_to_gdrive(event):
 async def gdrive_search_list(event):
     await event.edit("Processing ...")
     if CLIENT_ID is None or CLIENT_SECRET is None:
-        await mone.edit(
+        await event.edit(
             "This module requires credentials from https://da.gd/so63O. Aborting!"
         )
         return
