@@ -34,7 +34,7 @@ else:
 LOGS = getLogger(__name__)
 
 if version_info[0] < 3 or version_info[1] < 6:
-    LOGS.error("You MUST have a python version of at least 3.6."
+    LOGS.info("You MUST have a python version of at least 3.6."
                "Multiple features depend on this. Bot quitting.")
     quit(1)
 
@@ -44,7 +44,7 @@ CONFIG_CHECK = os.environ.get(
     "___________PLOX_______REMOVE_____THIS_____LINE__________", None)
 
 if CONFIG_CHECK:
-    LOGS.error(
+    LOGS.info(
         "Please remove the line mentioned in the first hashtag from the config.env file"
     )
     quit(1)
@@ -156,14 +156,14 @@ else:
 
 async def check_botlog_chatid():
     if not BOTLOG_CHATID:
-        LOGS.error(
+        LOGS.info(
             "You must set up the BOTLOG_CHATID variable in the config.env or environment variables, "
             "many critical features depend on it. KTHXBye.")
         quit(1)
 
     entity = await bot.get_entity(BOTLOG_CHATID)
     if entity.default_banned_rights.send_messages:
-        LOGS.error(
+        LOGS.info(
             "Your account doesn't have rights to send messages to BOTLOG_CHATID "
             "group. Check if you typed the Chat ID correctly.")
         quit(1)
@@ -173,7 +173,7 @@ with bot:
     try:
         bot.loop.run_until_complete(check_botlog_chatid())
     except:
-        LOGS.error(
+        LOGS.info(
             "BOTLOG_CHATID environment variable isn't a "
             "valid entity. Check your environment variables/config.env file.")
         quit(1)
