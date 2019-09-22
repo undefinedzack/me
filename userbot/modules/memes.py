@@ -673,9 +673,11 @@ async def coin(event):
 @errors_handler
 async def who(event):
     """ slaps a user, or get slapped if not a reply. """
-
     replied_user = await get_user_from_event(event)
-    replied_user = replied_user[0]
+    if replied_user:
+        replied_user = replied_user[0]
+    else:
+        await event.edit("`I can't slap nothing !!`")
     caption = await slap(replied_user, event)
     message_id_to_reply = event.message.reply_to_msg_id
 
