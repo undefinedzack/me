@@ -29,7 +29,7 @@ async def tmeme(e):
 @errors_handler
 async def tmeme(e):
     wspam = str(e.pattern_match.group(1))
-    message = tspam.split()
+    message = wspam.split()
     await e.delete()
     for word in message:
         await e.respond(letter)
