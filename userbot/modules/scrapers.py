@@ -39,7 +39,7 @@ from youtube_dl.utils import (DownloadError, ContentTooShortError,
 from asyncio import sleep
 
 from userbot import CMD_HELP, BOTLOG, BOTLOG_CHATID, YOUTUBE_API_KEY, CHROME_DRIVER, GOOGLE_CHROME_BIN
-from userbot.events import register
+from userbot.events import register, errors_handler
 from telethon.tl.types import DocumentAttributeAudio
 from userbot.modules.upload_download import progress, humanbytes, time_formatter
 
@@ -49,6 +49,7 @@ TRT_LANG = "en"
 
 
 @register(outgoing=True, pattern="^.crblang (.*)")
+@errors_handler
 async def setlang(prog):
     global CARBONLANG
     CARBONLANG = prog.pattern_match.group(1)
@@ -56,6 +57,7 @@ async def setlang(prog):
 
 
 @register(outgoing=True, pattern="^.carbon")
+@errors_handler
 async def carbon_api(e):
     """ A Wrapper for carbon.now.sh """
     await e.edit("`Processing..`")
@@ -119,6 +121,7 @@ async def carbon_api(e):
 
 
 @register(outgoing=True, pattern="^.img (.*)")
+@errors_handler
 async def img_sampler(event):
     """ For .img command, search and return images matching the query. """
     await event.edit("Processing...")
@@ -150,6 +153,7 @@ async def img_sampler(event):
 
 
 @register(outgoing=True, pattern="^.currency (.*)")
+@errors_handler
 async def moni(event):
     input_str = event.pattern_match.group(1)
     input_sgra = input_str.split(" ")
@@ -178,6 +182,7 @@ async def moni(event):
 
 
 @register(outgoing=True, pattern=r"^.google (.*)")
+@errors_handler
 async def gsearch(q_event):
     """ For .google command, do a Google search. """
     match = q_event.pattern_match.group(1)
@@ -212,6 +217,7 @@ async def gsearch(q_event):
 
 
 @register(outgoing=True, pattern=r"^.wiki (.*)")
+@errors_handler
 async def wiki(wiki_q):
     """ For .wiki command, fetch content from Wikipedia. """
     match = wiki_q.pattern_match.group(1)
@@ -244,6 +250,7 @@ async def wiki(wiki_q):
 
 
 @register(outgoing=True, pattern="^.ud (.*)")
+@errors_handler
 async def urban_dict(ud_e):
     """ For .ud command, fetch content from Urban Dictionary. """
     await ud_e.edit("Processing...")
@@ -284,6 +291,7 @@ async def urban_dict(ud_e):
 
 
 @register(outgoing=True, pattern=r"^.tts(?: |$)([\s\S]*)")
+@errors_handler
 async def text_to_speech(query):
     """ For .tts command, a wrapper for Google Text-to-Speech. """
     textx = await query.get_reply_message()
@@ -330,6 +338,7 @@ async def text_to_speech(query):
 
 # kanged from Blank-x ;---;
 @register(outgoing=True, pattern="^.imdb (.*)")
+@errors_handler
 async def imdb(e):
     try:
         movie_name = e.pattern_match.group(1)
@@ -413,6 +422,7 @@ async def imdb(e):
 
 
 @register(outgoing=True, pattern=r"^.trt(?: |$)([\s\S]*)")
+@errors_handler
 async def translateme(trans):
     """ For .trt command, translate the given text using Google Translate. """
     translator = Translator()
@@ -445,6 +455,7 @@ async def translateme(trans):
 
 
 @register(pattern=".lang (trt|tts) (.*)", outgoing=True)
+@errors_handler
 async def lang(value):
     """ For .lang command, change the default langauge of userbot scrapers. """
     util = value.pattern_match.group(1).lower()
@@ -480,6 +491,7 @@ async def lang(value):
 
 
 @register(outgoing=True, pattern="^.yt (.*)")
+@errors_handler
 async def yt_search(video_q):
     """ For .yt command, do a YouTube search from Telegram. """
     query = video_q.pattern_match.group(1)
@@ -542,9 +554,10 @@ async def youtube_search(query,
         return (nexttok, videos)
 
 
-@register(outgoing=True, pattern=r".rip?(audio|video) (.*)")
+@register(outgoing=True, pattern=r".rip(audio|video) (.*)")
+@errors_handler
 async def download_video(v_url):
-    """ For .rip command, download media from YouTube + 800 other sites. """
+    """ For .rip command, download media from YouTube and many other sites. """
     url = v_url.pattern_match.group(2)
     type = v_url.pattern_match.group(1).lower()
 
@@ -606,7 +619,7 @@ async def download_video(v_url):
         video = True
 
     try:
-        await v_url.edit("`Downloading...`")
+        await v_url.edit("`Fetching data, please wait..`")
         with YoutubeDL(opts) as rip:
             rip_data = rip.extract_info(url)
     except DownloadError as DE:
@@ -638,9 +651,11 @@ async def download_video(v_url):
     except Exception as e:
         await v_url.edit(f"{str(type(e)): {str(e)}}")
         return
-    await v_url.edit(f"`Uploading...`")
     c_time = time.time()
     if song:
+        await v_url.edit(f"`Preparing to upload song...`\
+        \n{rip_data['title']}\
+        \nby {rip_data['uploader']}")
         await v_url.client.send_file(
             v_url.chat_id,
             f"{rip_data['id']}.mp3",
@@ -657,6 +672,9 @@ async def download_video(v_url):
         os.remove(f"{rip_data['id']}.mp3")
         await v_url.delete()
     elif video:
+        await v_url.edit(f"`Preparing to upload video...`\
+        \n{rip_data['title']}\
+        \nby {rip_data['uploader']}")
         await v_url.client.send_file(
             v_url.chat_id,
             f"{rip_data['id']}.mp4",
@@ -702,12 +720,12 @@ CMD_HELP.update(
 CMD_HELP.update({
     'tts':
     '.tts <text> [or reply]\
-        \nUsage: Translates text to speech for the language which is set.\nUse .lang tts <language code> to set language for tts.'
+        \nUsage: Translates text to speech for the language which is set.\nUse .lang tts <language code> to set language for tts. (Default is English.)'
 })
 CMD_HELP.update({
     'trt':
     '.trt <text> [or reply]\
-        \nUsage: Translates text to the language which is set.\nUse .lang trt <language code> to set language for trt.'
+        \nUsage: Translates text to the language which is set.\nUse .lang trt <language code> to set language for trt. (Default is English)'
 })
 CMD_HELP.update({'yt': '.yt <text>\
         \nUsage: Does a YouTube search.'})

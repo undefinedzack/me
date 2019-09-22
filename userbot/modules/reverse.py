@@ -18,7 +18,7 @@ from telethon.tl.types import MessageMediaPhoto
 from PIL import Image
 
 from userbot import bot, CMD_HELP
-from userbot.events import register
+from userbot.events import register, errors_handler
 
 opener = urllib.request.build_opener()
 useragent = 'Mozilla/5.0 (Linux; Android 9; SM-G960F Build/PPR1.180610.011; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/74.0.3729.157 Mobile Safari/537.36'
@@ -26,6 +26,7 @@ opener.addheaders = [('User-agent', useragent)]
 
 
 @register(outgoing=True, pattern=r"^.reverse(?: |$)(\d*)")
+@errors_handler
 async def okgoogle(img):
     """ For .reverse command, Google search images and stickers. """
     if os.path.isfile("okgoogle.png"):
@@ -146,5 +147,5 @@ async def scam(results, lim):
 CMD_HELP.update({
     'reverse':
     '.reverse\
-        \nUsage: Reply to a pic/sticker to search it on Google Images !!'
+        \nUsage: Reply to a pic/sticker to revers-search it on Google Images !!'
 })

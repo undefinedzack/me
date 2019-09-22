@@ -9,12 +9,13 @@ from requests import get, post, exceptions
 import asyncio
 import os
 from userbot import BOTLOG, BOTLOG_CHATID, CMD_HELP, LOGS, TEMP_DOWNLOAD_DIRECTORY
-from userbot.events import register
+from userbot.events import register, errors_handler
 
 DOGBIN_URL = "https://del.dog/"
 
 
 @register(outgoing=True, pattern=r"^.paste(?: |$)([\s\S]*)")
+@errors_handler
 async def paste(pstl):
     """ For .paste command, pastes the text directly to dogbin. """
     dogbin_final_url = ""
@@ -22,7 +23,7 @@ async def paste(pstl):
     reply_id = pstl.reply_to_msg_id
 
     if not match and not reply_id:
-        await pstl.edit("Elon Musk said I cannot paste void.")
+        await pstl.edit("`Elon Musk said I cannot paste void.`")
         return
 
     if match:
@@ -73,11 +74,12 @@ async def paste(pstl):
 
 
 @register(outgoing=True, pattern="^.getpaste(?: |$)(.*)")
+@errors_handler
 async def get_dogbin_content(dog_url):
     """ For .getpaste command, fetches the content of a dogbin URL. """
     textx = await dog_url.get_reply_message()
     message = dog_url.pattern_match.group(1)
-    await dog_url.edit("`Getting dogbin content . . .`")
+    await dog_url.edit("`Getting dogbin content...`")
 
     if textx:
         message = str(textx.message)

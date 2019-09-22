@@ -2,10 +2,11 @@ from telethon.tl.functions.messages import EditChatDefaultBannedRightsRequest
 from telethon.tl.types import ChatBannedRights
 
 from userbot import CMD_HELP
-from userbot.events import register
+from userbot.events import register, errors_handler
 
 
 @register(outgoing=True, pattern=r"^.lock ?(.*)")
+@errors_handler
 async def locks(event):
     input_str = event.pattern_match.group(1).lower()
     peer_id = event.chat_id
@@ -94,6 +95,7 @@ async def locks(event):
 
 
 @register(outgoing=True, pattern=r"^.unlock ?(.*)")
+@errors_handler
 async def rem_locks(event):
     input_str = event.pattern_match.group(1).lower()
     peer_id = event.chat_id

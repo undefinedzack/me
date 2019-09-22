@@ -11,13 +11,14 @@ import traceback
 from selenium import webdriver
 from asyncio import sleep
 from selenium.webdriver.chrome.options import Options
-from userbot.events import register
+from userbot.events import register, errors_handler
 from userbot import GOOGLE_CHROME_BIN, CHROME_DRIVER, CMD_HELP
 
 
-@register(pattern=r".sc (.*)", outgoing=True)
+@register(pattern=r".ss (.*)", outgoing=True)
+@errors_handler
 async def capture(url):
-    """ For .sc command, capture a website and send the photo. """
+    """ For .ss command, capture a website's screenshot and send the photo. """
     await url.edit("Processing ...")
     try:
         chrome_options = Options()
@@ -40,7 +41,7 @@ async def capture(url):
         )
         driver.set_window_size(width + 125, height + 125)
         await url.edit("`Generating screenshot of the page...`")
-        await sleep(5)
+        await sleep(10)
         im_png = driver.get_screenshot_as_png()
         # saves screenshot of entire page
         driver.close()
@@ -61,7 +62,7 @@ async def capture(url):
 
 
 CMD_HELP.update({
-    "sc":
-    ".sc <url>\
+    "ss":
+    ".ss <url>\
     \nUsage: Takes a screenshot of a website and sends the screenshot."
 })

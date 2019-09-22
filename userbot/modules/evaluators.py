@@ -10,10 +10,11 @@ from getpass import getuser
 from os import remove
 from sys import executable
 from userbot import CMD_HELP, BOTLOG, BOTLOG_CHATID
-from userbot.events import register
+from userbot.events import register, errors_handler
 
 
 @register(outgoing=True, pattern="^.eval(?: |$)(.*)")
+@errors_handler
 async def evaluate(query):
     """ For .eval command, evaluates the given Python expression. """
     if query.is_channel and not query.is_group:
@@ -68,6 +69,7 @@ async def evaluate(query):
 
 
 @register(outgoing=True, pattern=r"^.exec(?: |$)([\s\S]*)")
+@errors_handler
 async def run(run_q):
     """ For .exec command, which executes the dynamically created program """
     code = run_q.pattern_match.group(1)
@@ -133,6 +135,7 @@ execute. Use .help exec for an example.```")
 
 
 @register(outgoing=True, pattern="^.term(?: |$)(.*)")
+@errors_handler
 async def terminal_runner(term):
     """ For .term command, runs bash commands and scripts on your server. """
     curruser = getuser()

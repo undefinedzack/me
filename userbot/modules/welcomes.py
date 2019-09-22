@@ -1,9 +1,10 @@
-from userbot.events import register
+from userbot.events import register, errors_handler
 from userbot import CMD_HELP, bot, LOGS, CLEAN_WELCOME, BOTLOG_CHATID
 from telethon.events import ChatAction
 
 
 @bot.on(ChatAction)
+@errors_handler
 async def welcome_to_chat(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import get_current_welcome_settings
@@ -74,6 +75,7 @@ async def welcome_to_chat(event):
 
 
 @register(outgoing=True, pattern=r"^.setwelcome$")
+@errors_handler
 async def save_welcome(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import add_welcome_setting
@@ -96,6 +98,7 @@ async def save_welcome(event):
 
 
 @register(outgoing=True, pattern="^.checkwelcome$")
+@errors_handler
 async def show_welcome(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import get_current_welcome_settings
@@ -104,21 +107,23 @@ async def show_welcome(event):
         return
     cws = get_current_welcome_settings(event.chat_id)
     if cws:
+        msg_o = await event.client.get_messages(entity=BOTLOG_CHATID,
+                                                ids=int(cws.f_mesg_id))
         await event.edit(
-            "`I am currently welcoming new users with a welcome note.`\
-            \n`Check the userbot log for the secret welcome message.`")
+            "`I am currently welcoming new users with this welcome note.`")
+        await event.reply(msg_o.message, file=msg_o.media)
     else:
         await event.edit("`No welcome note saved here !!`")
 
 
 @register(outgoing=True, pattern="^.rmwelcome$")
+@errors_handler
 async def del_welcome(event):
     try:
         from userbot.modules.sql_helper.welcome_sql import rm_welcome_setting
     except AttributeError:
         await event.edit("`Running on Non-SQL mode!`")
         return
-
     if rm_welcome_setting(event.chat_id) is True:
         await event.edit("`Welcome note deleted for this chat.`")
     else:

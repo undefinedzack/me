@@ -13,10 +13,11 @@ from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
 from telethon.utils import get_input_location
 from userbot import CMD_HELP, TEMP_DOWNLOAD_DIRECTORY
-from userbot.events import register
+from userbot.events import register, errors_handler
 
 
 @register(pattern=".whois(?: |$)(.*)", outgoing=True)
+@errors_handler
 async def who(event):
     """ For .whois command, get info about a user. """
     if not os.path.isdir(TEMP_DOWNLOAD_DIRECTORY):

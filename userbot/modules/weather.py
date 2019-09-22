@@ -11,7 +11,7 @@ from datetime import datetime
 from pytz import country_timezones as c_tz, timezone as tz, country_names as c_n
 
 from userbot import OPEN_WEATHER_MAP_APPID as OWM_API, CMD_HELP
-from userbot.events import register
+from userbot.events import register, errors_handler
 
 # ===== CONSTANT =====
 DEFCITY = ''
@@ -32,6 +32,7 @@ async def get_tz(con):
 
 
 @register(outgoing=True, pattern="^.weather(?: |$)(.*)")
+@errors_handler
 async def get_weather(weather):
     """ For .weather command, gets the current weather of a city. """
 
@@ -129,6 +130,7 @@ async def get_weather(weather):
 
 
 @register(outgoing=True, pattern="^.setcity(?: |$)(.*)")
+@errors_handler
 async def set_default_city(city):
     """ For .ctime command, change the default userbot country for date and time commands. """
 

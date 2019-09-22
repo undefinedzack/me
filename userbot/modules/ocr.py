@@ -3,7 +3,7 @@ import os
 import requests
 import logging
 from userbot import bot, OCR_SPACE_API_KEY, CMD_HELP, TEMP_DOWNLOAD_DIRECTORY
-from userbot.events import register
+from userbot.events import register, errors_handler
 
 
 async def ocr_space_file(filename,
@@ -37,7 +37,8 @@ async def ocr_space_file(filename,
     return r.json()
 
 
-@register(pattern=r"\.ocr (.*)", outgoing=True)
+@register(pattern=r".ocr (.*)", outgoing=True)
+@errors_handler
 async def ocr(event):
     await event.edit("`Reading...`")
     if not os.path.isdir(TEMP_DOWNLOAD_DIRECTORY):

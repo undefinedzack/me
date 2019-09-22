@@ -8,11 +8,12 @@ from telethon import events, errors, functions, types
 import traceback
 import sys
 import io
-from userbot.events import register
+from userbot.events import register, errors_handler
 from userbot import CMD_HELP
 
 
 @register(outgoing=True, pattern="^.try")
+@errors_handler
 async def test(event):
     await event.edit("Processing ...")
     cmd = event.text.split(' ', 1)[1]
@@ -46,7 +47,7 @@ async def test(event):
     else:
         evaluation = "Success"
 
-    final_output = "**Query**: `{}` \n\n **Result**: \n`{}` \n".format(
+    final_output = "**Query**:\n`{}`\n\n**Result**:\n`{}`".format(
         cmd, evaluation)
 
     if len(final_output) > 4096:

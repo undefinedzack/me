@@ -5,7 +5,7 @@ import aria2p
 from asyncio import sleep
 from os import system
 from userbot import LOGS, CMD_HELP
-from userbot.events import register
+from userbot.events import register, errors_handler
 
 cmd = "aria2c \
 --enable-rpc \
@@ -27,6 +27,7 @@ aria2 = aria2p.API(aria2p.Client(host="http://localhost", port=6800,
 
 
 @register(outgoing=True, pattern="^.aria magnet(?: |$)(.*)")
+@errors_handler
 async def magnet_download(event):
     magnet_uri = event.pattern_match.group(1)
     # Add Magnet URI Into Queue
@@ -44,6 +45,7 @@ async def magnet_download(event):
 
 
 @register(outgoing=True, pattern="^.aria tor(?: |$)(.*)")
+@errors_handler
 async def torrent_download(event):
     torrent_file_path = event.pattern_match.group(1)
     # Add Torrent Into Queue
@@ -60,6 +62,7 @@ async def torrent_download(event):
 
 
 @register(outgoing=True, pattern="^.aria url(?: |$)(.*)")
+@errors_handler
 async def magnet_download(event):
     uri = [event.pattern_match.group(1)]
     try:  # Add URL Into Queue
@@ -77,6 +80,7 @@ async def magnet_download(event):
 
 
 @register(outgoing=True, pattern="^.aria clear(?: |$)(.*)")
+@errors_handler
 async def remove_all(event):
     try:
         removed = aria2.remove_all(force=True)
@@ -92,6 +96,7 @@ async def remove_all(event):
 
 
 @register(outgoing=True, pattern="^.aria pause(?: |$)(.*)")
+@errors_handler
 async def pause_all(event):
     # Pause ALL Currently Running Downloads.
     paused = aria2.pause_all(force=True)
@@ -102,6 +107,7 @@ async def pause_all(event):
 
 
 @register(outgoing=True, pattern="^.aria resume(?: |$)(.*)")
+@errors_handler
 async def resume_all(event):
     resumed = aria2.resume_all()
     await event.edit("`Resuming aria downloads....`")
@@ -112,6 +118,7 @@ async def resume_all(event):
 
 
 @register(outgoing=True, pattern="^.aria show(?: |$)(.*)")
+@errors_handler
 async def show_all(event):
     output = "output.txt"
     downloads = aria2.get_downloads()
