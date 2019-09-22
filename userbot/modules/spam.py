@@ -32,7 +32,7 @@ async def tmeme(e):
     message = wspam.split()
     await e.delete()
     for word in message:
-        await e.respond(letter)
+        await e.respond(word)
     if BOTLOG:
         await e.client.send_message(
             BOTLOG_CHATID, "#WSPAM\n"
