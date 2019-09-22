@@ -67,10 +67,13 @@ UNMUTE_RIGHTS = ChatBannedRights(until_date=None, send_messages=False)
 # ================================================
 
 
-@register(outgoing=True, pattern="^.setgrouppic$")
+@register(outgoing=True, pattern="^.setgpic$")
 @errors_handler
 async def set_group_photo(gpic):
-    """ For .setgrouppic command, changes the picture of a group """
+    """ For .setgpic command, changes the picture of a group """
+    if not gpic.is_group:
+        await gpic.edit("`I don't think this is a group.`")
+        return
     replymsg = await gpic.get_reply_message()
     chat = await gpic.get_chat()
     admin = chat.admin_rights
@@ -526,6 +529,9 @@ async def gspider(gspdr):
 @errors_handler
 async def rm_deletedacc(show):
     """ For .delusers command, list all the ghost/deleted accounts in a chat. """
+    if not show.is_group:
+        await show.edit("`I don't think this is a group.`")
+        return
     con = show.pattern_match.group(1)
     del_u = 0
     del_status = "`No deleted accounts found, Group is cleaned as Hell`"
@@ -815,5 +821,7 @@ CMD_HELP.update({
 \n\n.admins\
 \nUsage: Retrieves a list of admins in the chat.\
 \n\n.users or .users <name of member>\
-\nUsage: Retrieves all (or queried) users in the chat."
+\nUsage: Retrieves all (or queried) users in the chat.\
+\n\n.setgppic <reply to image>\
+\nUsage: Changes the group's display picture."
 })

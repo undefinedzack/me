@@ -5,9 +5,10 @@
 #
 # The entire source code is OSSRPL except 'whois' which is MPL
 # License: MPL and OSSRPL
-""" Userbot module for getiing info about any user on Telegram. """
+""" Userbot module for getiing info about any user on Telegram(including you!). """
 
 import os
+
 from telethon.tl.functions.photos import GetUserPhotosRequest
 from telethon.tl.functions.users import GetFullUserRequest
 from telethon.tl.types import MessageEntityMentionName
@@ -19,32 +20,37 @@ from userbot.events import register, errors_handler
 @register(pattern=".whois(?: |$)(.*)", outgoing=True)
 @errors_handler
 async def who(event):
-    """ For .whois command, get info about a user. """
+
+    await event.edit(
+        "`Sit tight while I steal some data from Mark Zuckerburg...`")
+
     if not os.path.isdir(TEMP_DOWNLOAD_DIRECTORY):
         os.makedirs(TEMP_DOWNLOAD_DIRECTORY)
+
     replied_user = await get_user(event)
-    if not replied_user:
-        return
-    else:
-        await event.edit(
-            "`Sit tight while I steal some data from Mark Zuckerburg...`")
-        photo, caption = await fetch_info(replied_user, event)
-        message_id_to_reply = event.message.reply_to_msg_id
-        if not message_id_to_reply:
-            message_id_to_reply = None
-        try:
-            await event.client.send_file(event.chat_id,
-                                         photo,
-                                         caption=caption,
-                                         link_preview=False,
-                                         force_document=False,
-                                         reply_to=message_id_to_reply,
-                                         parse_mode="html")
-            if not photo.startswith("http"):
-                os.remove(photo)
-            await event.delete()
-        except TypeError:
-            await event.edit(caption, parse_mode="html")
+
+    photo, caption = await fetch_info(replied_user, event)
+
+    message_id_to_reply = event.message.reply_to_msg_id
+
+    if not message_id_to_reply:
+        message_id_to_reply = None
+
+    try:
+        await event.client.send_file(event.chat_id,
+                                     photo,
+                                     caption=caption,
+                                     link_preview=False,
+                                     force_document=False,
+                                     reply_to=message_id_to_reply,
+                                     parse_mode="html")
+
+        if not photo.startswith("http"):
+            os.remove(photo)
+        await event.delete()
+
+    except TypeError:
+        await event.edit(caption, parse_mode="html")
 
 
 async def get_user(event):
@@ -60,8 +66,8 @@ async def get_user(event):
             user = int(user)
 
         if not user:
-            await event.edit("`Pass the user's username, id or reply!`")
-            return
+            self_user = await event.client.get_me()
+            user = self_user.id
 
         if event.message.entities is not None:
             probable_user_mention_entity = event.message.entities[0]
@@ -85,7 +91,7 @@ async def get_user(event):
 async def fetch_info(replied_user, event):
     """ Get details from the User object. """
     replied_user_profile_photos = await event.client(
-        GetUserPhotosRequest(user_id=replied_user.id,
+        GetUserPhotosRequest(user_id=replied_user.user.id,
                              offset=42,
                              max_id=0,
                              limit=80))
@@ -94,20 +100,20 @@ async def fetch_info(replied_user, event):
         replied_user_profile_photos_count = replied_user_profile_photos.count
     except AttributeError as e:
         pass
-    user_id = replied_user.id
-    first_name = replied_user.first_name
-    last_name = replied_user.last_name
+    user_id = replied_user.user.id
+    first_name = replied_user.user.first_name
+    last_name = replied_user.user.last_name
     try:
         dc_id, location = get_input_location(replied_user.profile_photo)
     except Exception as e:
         dc_id = "Couldn't fetch DC ID!"
         location = str(e)
     common_chat = replied_user.common_chats_count
-    username = replied_user.username
+    username = replied_user.user.username
     user_bio = replied_user.about
-    is_bot = replied_user.bot
-    restricted = replied_user.restricted
-    verified = replied_user.verified
+    is_bot = replied_user.user.bot
+    restricted = replied_user.user.restricted
+    verified = replied_user.user.verified
     photo = await event.client.download_profile_photo(user_id,
                                                       TEMP_DOWNLOAD_DIRECTORY +
                                                       str(user_id) + ".jpg",
@@ -119,6 +125,7 @@ async def fetch_info(replied_user, event):
     username = "@{}".format(username) if username else (
         "This User has no Username")
     user_bio = "This User has no About" if not user_bio else user_bio
+
     caption = "<b>USER INFO:</b>\n\n"
     caption += f"First Name: {first_name}\n"
     caption += f"Last Name: {last_name}\n"
@@ -133,6 +140,7 @@ async def fetch_info(replied_user, event):
     caption += f"Common Chats with this user: {common_chat}\n"
     caption += f"Permanent Link To Profile: "
     caption += f"<a href=\"tg://user?id={user_id}\">{first_name}</a>"
+
     return photo, caption
 
 

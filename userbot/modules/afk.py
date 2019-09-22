@@ -143,7 +143,6 @@ async def type_afk_is_not_true(notafk):
         ISAFK = False
         await notafk.respond("I'm no longer AFK.")
         await sleep(2)
-        await notafk.delete()
         if BOTLOG:
             await notafk.client.send_message(
                 BOTLOG_CHATID,

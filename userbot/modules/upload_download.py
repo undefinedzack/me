@@ -26,8 +26,7 @@ from userbot.events import register, errors_handler
 
 
 async def progress(current, total, event, start, type_of_ps, file_name=None):
-    """Generic progress_callback for both
-    upload.py and download.py"""
+    """Generic progress_callback for uploads and downloads."""
     now = time.time()
     diff = now - start
     if round(diff % 10.00) == 0 or current == total:
@@ -36,9 +35,9 @@ async def progress(current, total, event, start, type_of_ps, file_name=None):
         elapsed_time = round(diff) * 1000
         time_to_completion = round((total - current) / speed) * 1000
         estimated_total_time = elapsed_time + time_to_completion
-        progress_str = "[{0}{1}]\nProgress: {2}%\n".format(
-            ''.join(["█" for i in range(math.floor(percentage / 5))]),
-            ''.join(["░" for i in range(20 - math.floor(percentage / 5))]),
+        progress_str = "[{0}{1}] {2}%\n".format(
+            ''.join(["▰" for i in range(math.floor(percentage / 5))]),
+            ''.join(["▱" for i in range(20 - math.floor(percentage / 5))]),
             round(percentage, 2))
         tmp = progress_str + \
             "{0} of {1}\nETA: {2}".format(
@@ -116,9 +115,9 @@ async def download(target_file):
             percentage = downloader.get_progress() * 100
             speed = downloader.get_speed()
             elapsed_time = round(diff) * 1000
-            progress_str = "[{0}{1}]\nProgress: {2}%".format(
-                ''.join(["█" for i in range(math.floor(percentage / 5))]),
-                ''.join(["░" for i in range(20 - math.floor(percentage / 5))]),
+            progress_str = "[{0}{1}] {2}%".format(
+                ''.join(["▰" for i in range(math.floor(percentage / 5))]),
+                ''.join(["▱" for i in range(20 - math.floor(percentage / 5))]),
                 round(percentage, 2))
             estimated_total_time = downloader.get_eta(human=True)
             try:
