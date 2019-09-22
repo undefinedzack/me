@@ -276,7 +276,7 @@ async def nothanos(unbon):
     # If everything goes well...
     await unbon.edit("`Unbanning...`")
 
-    user = await get_user_from_event(unbon)
+    user = await get_user_from_event(unbon)[0]
     if user:
         pass
     else:
@@ -380,7 +380,7 @@ async def unmoot(unmot):
 
     # If admin or creator, inform the user and start unmuting
     await unmot.edit('```Unmuting...```')
-    user = await get_user_from_event(unmot)
+    user = await get_user_from_event(unmot)[0]
     if user:
         pass
     else:
@@ -458,7 +458,7 @@ async def ungmoot(un_gmute):
         await un_gmute.edit(NO_SQL)
         return
 
-    user = await get_user_from_event(un_gmute)
+    user = await get_user_from_event(un_gmute)[0]
     if user:
         pass
     else:
