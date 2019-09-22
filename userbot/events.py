@@ -113,8 +113,6 @@ def register(**args):
                         caption=text,
                     )
                     remove("error.log")
-                else:
-                    pass
 
         if not disable_edited:
             bot.add_event_handler(wrapper, events.MessageEdited(**args))

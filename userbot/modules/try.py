@@ -12,10 +12,10 @@ from userbot.events import register
 from userbot import CMD_HELP
 
 
-@register(outgoing=True, pattern="^.try (.*)")
+@register(outgoing=True, pattern="^.try")
 async def test(event):
     await event.edit("Processing ...")
-    cmd = event.pattern_match.group(1)
+    cmd = event.text.split(' ', 1)[1]
     reply_to_id = event.message.id
     if event.reply_to_msg_id:
         reply_to_id = event.reply_to_msg_id
